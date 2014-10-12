@@ -17,7 +17,7 @@
 	    android:layout_marginLeft="5dip"
 	    android:src="@drawable/ic_pastipas_header" />
 
-	<ImageView 
+	<!-- <ImageView 
 		android:id="@+id/eyeIcon"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -27,13 +27,12 @@
 		android:layout_marginRight="12dip"
 		android:layout_marginLeft="12dip"
 		android:onClick="startARView"
-	/>
+	/>-->
 	<ImageView
 		android:id="@+id/div1"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:src="@drawable/divider"
-		android:layout_toLeftOf="@id/eyeIcon"
 	/>
 	<ImageView 
 		android:id="@+id/markerIcon"
@@ -42,6 +41,7 @@
 		android:src="@drawable/marker"
 		android:layout_toLeftOf="@id/div1"
 		android:layout_centerVertical="true"
+		android:layout_alignParentRight="true"
 		android:layout_marginRight="15dip"
 		android:layout_marginLeft="15dip"
 		android:onClick="refreshLocation"

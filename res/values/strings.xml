@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Pasti Pas!</string>
-    <string name="app_name">Pasti Pas</string>
-    <string name="urbAPIKey">d525de574df5</string>
+    <string name="hello" translatable="false">Hello World, Pasti Pas!</string>
+    <string name="app_name" translatable="false">Pasti Pas</string>
+    <string name="urbAPIKey" translatable="false">d525de574df5</string>
 </resources>

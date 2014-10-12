@@ -25,13 +25,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, 2);
-		Log.v("Pasti Pas","Database Helper start");
+		//Log.v("Pasti Pas","Database Helper start");
 	}
 	
 	
 	@Override
 	public void onCreate(SQLiteDatabase db) {	
-		Log.v("Pasti Pas","Database Helper created");
+		//Log.v("Pasti Pas","Database Helper created");
 		db.execSQL("CREATE TABLE pastipas (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 				"			no_spbu TEXT, propinsi TEXT, kota TEXT, alamat TEXT, latitude REAL, longitude REAL);");
 	
@@ -40,27 +40,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    ResponseHandler<String> handler = new BasicResponseHandler();
 	    try {
 	    	String result = httpclient.execute(request, handler);
-	    	Log.v("Pasti Pas","result http:"+result);
+	    	//Log.v("Pasti Pas","result http:"+result);
 	        JSONObject jsonObj = new JSONObject(result);
 	        JSONObject feedJson = jsonObj.getJSONObject("feed");
 	        JSONArray json_arr = feedJson.getJSONArray("entry");
 	        for(int i =0;i<json_arr.length();i++){
 	        	JSONObject o = json_arr.getJSONObject(i);
 	            ContentValues cv = new ContentValues();
-	            cv.put("no_spbu", o.getJSONObject("gsx$_cn6ca").getString("$t"));
+	            cv.put("no_spbu", o.getJSONObject("gsx$spbu").getString("$t"));
 	            cv.put("propinsi",o.getJSONObject("gsx$propinsi").getString("$t"));
 	            cv.put("alamat", o.getJSONObject("gsx$alamat").getString("$t"));
 	            cv.put("kota", o.getJSONObject("gsx$kota").getString("$t"));
-	            cv.put("latitude",o.getJSONObject("gsx$latitude").getDouble("$t"));
-	            cv.put("longitude", o.getJSONObject("gsx$longitude").getDouble("$t"));
+	            if(!o.getJSONObject("gsx$latitude").getString("$t").trim().equals(""))
+	            	cv.put("latitude",o.getJSONObject("gsx$latitude").getDouble("$t"));
+	            if(!o.getJSONObject("gsx$longitude").getString("$t").trim().equals(""))
+	            	cv.put("longitude", o.getJSONObject("gsx$longitude").getDouble("$t"));
 	            db.insert("pastipas","no_spbu", cv);
+	            //Log.v("Pasti Pas",o.toString());
 	        }
 	    } catch (ClientProtocolException e) {
-	    	Log.v("Pasti Pas","Client Protocol Exception "+e.getMessage());
+	    	//Log.v("Pasti Pas","Client Protocol Exception "+e.getMessage());
 	    } catch (IOException e) {
-	    	Log.v("Pasti Pas","IOException "+e.getMessage());
+	    	//Log.v("Pasti Pas","IOException "+e.getMessage());
 	    } catch (JSONException e) {
-	    	Log.v("Pasti Pas","JSON Exception "+e.getMessage());
+	    	//Log.v("Pasti Pas","JSON Exception "+e.getMessage());
 	    }
 	    httpclient.getConnectionManager().shutdown();
 	

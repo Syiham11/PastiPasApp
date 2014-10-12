@@ -63,8 +63,9 @@
 	    		android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content"
 	    		android:layout_below="@id/bizReviewCount"
-	    		android:layout_marginTop="10dip"
+	    		android:layout_marginTop="0dip"
 	    	/>
+	    	
 	    </RelativeLayout>
 	    <ImageView 
 	    	android:id="@+id/bizLogo"
