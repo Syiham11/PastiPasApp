@@ -60,7 +60,6 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 	private ReverseGeo revGeo;
 	private DatabaseHelper dbHelper;
 	//private DownloadPano downloadPano;
-	//private Location currLocation;
 	
 	private LocationClient mLocationClient;
 	private Location mCurrentLocation;
@@ -74,7 +73,7 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
     private static final long UPDATE_INTERVAL =
             MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
     // The fastest update frequency, in seconds
-    private static final int FASTEST_INTERVAL_IN_SECONDS = 600;
+    private static final int FASTEST_INTERVAL_IN_SECONDS = 10*60;
     // A fast frequency ceiling in milliseconds
     private static final long FASTEST_INTERVAL =
             MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
@@ -89,15 +88,9 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
         int resultCode =
                 GooglePlayServicesUtil.
                         isGooglePlayServicesAvailable(this);
-//        Log.v("Pasti Pas", "Result Code "+resultCode);
-        // If Google Play services is available
         if (ConnectionResult.SUCCESS == resultCode) {
             // In debug mode, log the status
-/*            Log.d("Location Updates",
-                    "Google Play services is available.");*/
             return true;
-        // Google Play services was not available for some reason.
-        // resultCode holds the error code.
         } else {
             // Get the error dialog from Google Play services
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
@@ -125,12 +118,11 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 		super.onCreate(savedInstanceState);
 		
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        /*getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
         setContentView(R.layout.evo);
         
         dbHelper = new DatabaseHelper(this);
-        //dbHelper.getReadableDatabase();
         
         df = new DecimalFormat("0.00");
      
@@ -140,7 +132,6 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-			//	FlurryAgent.onEvent("Click on Business");
 				//startActivity(new Intent("android.intent.action.VIEW", Uri.parse(searchResult.get(arg2).getBusinessMobileWebURL())));
 			}
         });
@@ -159,60 +150,7 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 
         
         mLocationClient = new LocationClient(this, this, this);
-     
-        /*LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        Log.v("Pasti Pas","Continue to Location");
-        LocationListener locationListener = new LocationListener() {
-
-			@Override
-			public void onLocationChanged(Location location) {
-				Log.v("Pasti Pas", "Got Location: " + location.getLatitude() + "," + location.getLongitude());
-				currLocation = location;
-				coords = location.getLatitude() + "," + location.getLongitude();
-				
-				// Get Location
-				if(whereAmI != null){
-					whereAmI.cancel(true);
-				}
-		        whereAmI = new WhereAmI();
-		        whereAmI.execute(lv);
-			}
-
-			@Override
-			public void onProviderDisabled(String provider) {}
-
-			@Override
-			public void onProviderEnabled(String provider) {}
-
-			@Override
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {}
-        	
-        };
         
-        
-        Criteria criteria = new Criteria();
-        //criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        String provider_name = locationManager.getBestProvider(criteria, true);
-        Log.v("Pasti Pas",provider_name);
-        currLocation = locationManager.getLastKnownLocation(provider_name);
-        if(currLocation!=null){
-	        Log.v("Pasti Pas",currLocation.toString());
-			coords = currLocation.getLatitude() + "," + currLocation.getLongitude();
-	        whereAmI = new WhereAmI();
-	        whereAmI.execute(lv);
-        }
-//        Log.v("Pasti Pas","before location update");
-//        locationManager.requestLocationUpdates(provider_name, 1000, 5000, locationListener);
-//        Log.v("Pasti Pas","after location update");
-        
-        if (locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)){
-        	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 5000, locationListener);
-        }
-        
-        /*if (locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)){
-        	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
-        }*/
         
         // Detect Shake
         mSensorListener = new ShakeEventListener();
@@ -234,8 +172,6 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 				if(revGeo != null)
 					revGeo.cancel(true);
 				
-//				if(downloadPano != null)
-//					downloadPano.cancel(true);
 				
 				ListView lv = (ListView) findViewById(R.id.lv);
 				lv.setVisibility(View.GONE);
@@ -307,8 +243,8 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 		protected void onPostExecute(String s) {
 			if(s.compareTo("") != 0)
 				changeStatusText("Sekitar "+s);
-			else
-				changeStatusText("Tidak dapat menemukan lokasi anda..");
+			//else
+				//changeStatusText("Tidak dapat menemukan lokasi anda..");
 		}
 	}
 	
@@ -323,12 +259,11 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 			revGeo = new ReverseGeo();
 			revGeo.execute(coords);
 			
-			updgradeDB();
-			Geocoder geocoder = new Geocoder(getApplicationContext());
-			String[] split= coords.split(",");
-			try{
-				List<Address> listAddress = geocoder.getFromLocation(Double.valueOf(split[0]), Double.valueOf(split[1]), 1);
-//				Log.v("Pasti Pas",listAddress.get(0).toString());
+//			updgradeDB();
+	//		Geocoder geocoder = new Geocoder(getApplicationContext());
+//			String[] split= coords.split(",");
+			//try{
+/*				List<Address> listAddress = geocoder.getFromLocation(Double.valueOf(split[0]), Double.valueOf(split[1]), 1);
 				String address[] = listAddress.get(0).getAddressLine(2).split(",");
 				kota = address[0];
 				kota = kota.replace("City", "");
@@ -354,50 +289,62 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 				}
 				//kota = "Jakarta Pusat";
 				String[] args = new String[1];
-				args[0] = "%"+kota.trim()+"%";
+				args[0] = "%"+kota.trim()+"%";*/
 				//Log.v("Pasti Pas","Kota = "+kota);
 			    Cursor cursor = dbHelper.getReadableDatabase().
-			    		 rawQuery("select _id, no_spbu , propinsi, kota, alamat, latitude, longitude FROM pastipas where kota like ?",args);
+			    		 rawQuery("select _id, no_spbu , propinsi, kota, alamat, latitude, longitude FROM pastipas",new String[]{});
 			    
 				
 			     TreeMap<Double,SearchResult> resultMap= new TreeMap<Double,SearchResult>();
-			     Double i = 1.0;
-//			     Log.v("Pasti Pas","Search Result = "+cursor.getCount());
+//			     Double i = 1.0;
+			     Log.v("Pasti Pas","Search Result = "+cursor.getCount());
 			     while(cursor.moveToNext()){
-			    	 /*double latitude = cursor.getDouble(5);
+			    	 double latitude = cursor.getDouble(5);
 			    	 double longitude = cursor.getDouble(6);
 			    	 float[] results = new float[3];
-			    	 Location.distanceBetween(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude(),latitude, longitude, results);*/
+			    	 Location.distanceBetween(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude(),latitude, longitude, results);
 			    	 
 			    	 SearchResult s = new SearchResult();
 			    	 s.setNo_spbu(cursor.getString(1));
 			    	 s.setPropinsi(cursor.getString(2));
 			    	 s.setKota(cursor.getString(3));
 			    	 s.setAlamat(cursor.getString(4).replace("()",""));
-			    	 //s.setDistance(Double.valueOf(results[0]));
+			    	 s.setDistance(Double.valueOf(results[0]));
 			    	 
-			    	 //resultMap.put(Double.valueOf(results[0]), s);
-			    	 resultMap.put(i, s);
-			    	 i=i+1;
+			    	 resultMap.put(Double.valueOf(results[0]), s);
+			    	 //resultMap.put(i, s);
+			    	 //i=i+1;
 			     }
-			     listResult = new ArrayList<SearchResult>(resultMap.values());
-			}catch(IOException ioe){
-			    listResult = new ArrayList<SearchResult>();
+			     
+			     
+			     int i =1;
+			     listResult = new ArrayList<SearchResult>();
+			     for(Double key:resultMap.keySet()){
+			    	 SearchResult entry = resultMap.get(key);
+			    	 listResult.add(entry);
+			    	 i++;
+			    	 if(i>10){
+			    		 break;
+			    	 }
+			     }
+			     Log.v("Pasti Pas","List Result = "+listResult.size());
+		//	}catch(IOException ioe){
+			    //listResult = new ArrayList<SearchResult>();
 				//Log.v("Pasti Pas","IOE Exception "+ioe.getMessage());
-			}
+		//	}
 		     return l[0];
 		}
 		
 		private void updgradeDB(){
-			//Log.v("Pasti Pas","Need Updgrade Db?");
+			Log.v("Pasti Pas","Need Updgrade Db?");
 			SharedPreferences sharedPref = myActivity.getPreferences(Context.MODE_PRIVATE);
-			long last_upgrade = sharedPref.getLong("last_upgrade", 0);
+			//long last_upgrade = sharedPref.getLong("last_upgrade", 0);
 			//Log.v("Pasti Pas","Last Upgrade = "+last_upgrade);
-			//long last_upgrade = 0;
+			long last_upgrade = 0;
 			long now = System.currentTimeMillis();
 			
 			if(now >= last_upgrade+(30l*24l*60l*60l*1000l)){
-				//Log.v("Pasti Pas","Need Updgrade Db? Yes");
+				Log.v("Pasti Pas","Need Updgrade Db? Yes");
 				dbHelper.getReadableDatabase().setVersion(1);
 //				dbHelper.onUpgrade(dbHelper.getReadableDatabase(),1,2);
 				SharedPreferences.Editor editor = sharedPref.edit();
@@ -474,53 +421,6 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 			return arg0;
 		}
 		
-		/*private class DownloadImage extends AsyncTask<ListData, Void, ListData> {
-			private ImageView img;
-			
-			@Override
-			protected ListData doInBackground(ListData... l) {
-				int pos = l[0].getPosition();
-				View v = l[0].getView();
-				Bitmap ret;
-				
-				try {
-					String imgStr = searchResult.get(pos).getBusinessPhoto();
-					Log.v("JAJAN", "Downloading image " + imgStr);
-					imgMan = new ImageManager(imgStr);
-					
-					img = (ImageView) v.findViewById(R.id.bizLogo);
-					
-					if(imgMan.fileExists()) {
-						ret = imgMan.getImage();
-					} else {
-						ret = imgMan.saveImage();
-					}
-					
-					if(ret == null) {
-						return null;
-					}
-					
-					ListData ll = new ListData(pos, v);
-					ll.setBitmap(ret);
-					
-					return ll;
-				} catch(Exception e) {
-					//e.printStackTrace();
-					return null;
-				}
-			}
-			
-			@Override
-			protected void onPostExecute(ListData ret) {
-				if(ret != null && ret.getBitmap() != null) {
-					img.setImageBitmap(ret.getBitmap());
-					if(l.get(ret.getPosition()).getBitmap() == null) {
-						l.get(ret.getPosition()).setBitmap(ret.getBitmap());
-					}
-				}
-			}
-			
-		}*/
 
 		public View getView(int position, View v, ViewGroup vg) {
 			LayoutInflater inflater = getLayoutInflater();
@@ -539,8 +439,8 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 			tv.setText(s.getKota()+" "+s.getPropinsi());
 			
 			tv = (TextView) v.findViewById(R.id.bizReview);
-		//	tv.setText(df.format(s.getDistance())+" km");
-			tv.setText("");
+			tv.setText(df.format(s.getDistance()/1000)+" km");
+			//tv.setText("");
 			
 			/*
 			// Lazy load images
@@ -581,124 +481,8 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 		
 	}
 	
-	/*private class DownloadPano extends AsyncTask<String, Void, String> {
-		private ProgressDialog dlg;
-		protected final String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
-		private Bitmap bm;
-		
-		@Override
-		protected void onPreExecute() {
-			dlg = new ProgressDialog(Evo.this);
-			dlg.setTitle(R.string.app_name);
-			dlg.setIcon(R.drawable.icon);
-			dlg.setMessage("Downloading..");
-			dlg.show();
-		}
-		
-		@Override
-		protected String doInBackground(String... s) {
-			String ret = "";
-			
-			OAUTHnesia o = new OAUTHnesia(Evo.CONSUMER_KEY, Evo.CONSUMER_SECRET, OAUTHnesia.OAUTH_SAFE_ENCODE);
-			try {
-				String res = o.oAuth("get/pano_images", "", "business_uri="+s[0]);
-				
-				JSONArray pano = new JSONObject(res).getJSONArray("pano_images").getJSONArray(0);
-				for(int i=0, max=pano.length(); i<max; i++) {
-					String name = pano.getString(i).substring(pano.getString(i).lastIndexOf("/") + 1);
-					
-					ret += SaveImage(pano.getString(i), name);
-					if(i < (max-1))
-						ret += ",";
-				}
-			} catch (Exception e) {}
-			
-			return ret;
-		}
-		
-		@Override
-		protected void onPostExecute(String f) {
-			dlg.dismiss();
-			
-			if(f.compareTo("") != 0) {
-				Intent i = new Intent(Evo.this, Panoramic.class);
-				i.putExtra("filePath", f);
-				startActivity(i);
-			} else {
-				Toast.makeText(Evo.this, "Gagal memuat Panoramic..", Toast.LENGTH_LONG).show();
-			}
-		}
-		
-		private Bitmap LoadImage(String URL) {
-			Bitmap bitmap = null;
-			InputStream in = null;
-			BitmapFactory.Options bmOptions;
-			bmOptions = new BitmapFactory.Options();
-			bmOptions.inSampleSize = 1;
-			try {
-				in = OpenHttpConnection(URL);
-				bitmap = BitmapFactory.decodeStream(in, null, bmOptions);
-				in.close();
-			} catch (Exception e1) {
-			}
-			return bitmap;
-		}
-		
-		private InputStream OpenHttpConnection(String strURL) throws IOException {
-			InputStream inputStream = null;
-			URL url = new URL(strURL);
-			URLConnection conn = url.openConnection();
-
-			try {
-				HttpURLConnection httpConn = (HttpURLConnection) conn;
-				httpConn.setRequestMethod("GET");
-				httpConn.connect();
-
-				if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-					inputStream = httpConn.getInputStream();
-				}
-			} catch (Exception ex) {
-			}
-			return inputStream;
-		}
-		
-		private String SaveImage(String image, String name) {
-			OutputStream outStream = null;
-			String path = extStorageDirectory + "/jajan/";
-			File t = new File(path);
-			t.mkdirs();
-			
-			if (image.length() > 0) {
-				File file = new File(path, name);
-				if (file.exists()) {
-					Log.i("file exist", "ada");
-				} else {
-					//file.mkdirs();
-					bm = LoadImage(image);
-					File f = new File(path);
-					f.mkdirs();
-					f = new File(path, name);					
-					try {
-						outStream = new FileOutputStream(f);
-						bm.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-						outStream.flush();
-						outStream.close();
-					} catch (FileNotFoundException e1) {
-						Log.e("ImageManager", "Giving up saving image to SD Card..");
-					} catch (IOException e2) {
-						Log.e("ImageManager", "Giving up saving image to SD Card..");
-					}
-				}
-			}
-			
-			return path + "/" + name;
-		}
-		
-	}*/
-	
 	public void onStart() {
 	   super.onStart();
-	   //FlurryAgent.onStartSession(this, FLURRY_API_KEY);
 	   mLocationClient.connect();
 	}
 	
@@ -718,7 +502,6 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 
 	   mLocationClient.disconnect();
 	  // mSensorManager.unregisterListener(mSensorListener);
-	   //FlurryAgent.onEndSession(this);
 	   super.onStop();
 	}
 	
@@ -775,30 +558,47 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 	@Override
     public void onLocationChanged(Location location) {
 		
-//		Log.v("Pasti Pas", "Got Location: " + location.getLatitude() + "," + location.getLongitude());
+		Log.v("Pasti Pas", "Got Location On Location changeds: " + location.getLatitude() + "," + location.getLongitude());
 		mCurrentLocation = location;
-		coords = location.getLatitude() + "," + location.getLongitude();
 		
-		if(!servicesConnected()){
-			return;
+		if(!coords.equals(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude())){
+			changeStatusText("Sekitar Koordinat "+mCurrentLocation.getLatitude()+", "+mCurrentLocation.getLongitude());
+			coords = mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
+			
+			if(!servicesConnected()){
+				return;
+			}
+			// Get Location
+			if(whereAmI != null){
+				whereAmI.cancel(true);
+			}
+	        whereAmI = new WhereAmI(Evo.this);
+	        whereAmI.execute(lv);
 		}
-		// Get Location
-		if(whereAmI != null){
-			whereAmI.cancel(true);
-		}
-        whereAmI = new WhereAmI(Evo.this);
-        whereAmI.execute(lv);
         
-        /*String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();*/
     }
 
 
 	@Override
 	public void onConnected(Bundle arg0) {
-		// TODO Auto-generated method stub
+        Location newLocation = new Location("flp");
+        newLocation.setLatitude(-6.189515);
+        newLocation.setLongitude(106.790028);
+        newLocation.setAccuracy(3.0f);
+        mCurrentLocation = mLocationClient.getLastLocation();
+//        mCurrentLocation = newLocation;
+
+        if(mCurrentLocation != null && !coords.equals(mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude())){
+    		Log.v("Pasti Pas", "Got Location on Connected: " + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude());
+    		changeStatusText("Sekitar Koordinat "+mCurrentLocation.getLatitude()+", "+mCurrentLocation.getLongitude());
+        	coords = mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude();
+        	if(whereAmI != null){
+    			whereAmI.cancel(true);
+    		}
+            whereAmI = new WhereAmI(Evo.this);
+            whereAmI.execute(lv);
+        }
+		
         if (mUpdatesRequested) {
         	mLocationClient.requestLocationUpdates(mLocationRequest, this);
         }
@@ -809,7 +609,7 @@ public class Evo extends FragmentActivity implements GooglePlayServicesClient.Co
 	@Override
 	public void onDisconnected() {
 		// TODO Auto-generated method stub
-		
+		Log.v("Pasti Pas","Disconnect");
 	}
 	
 }

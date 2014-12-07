@@ -24,14 +24,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	
 	public DatabaseHelper(Context context) {
-		super(context, DATABASE_NAME, null, 2);
-		//Log.v("Pasti Pas","Database Helper start");
+		super(context, DATABASE_NAME, null, 3);
+		Log.v("Pasti Pas","Database Helper start");
 	}
 	
 	
 	@Override
 	public void onCreate(SQLiteDatabase db) {	
-		//Log.v("Pasti Pas","Database Helper created");
+		Log.v("Pasti Pas","Database Helper created");
 		db.execSQL("CREATE TABLE pastipas (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 				"			no_spbu TEXT, propinsi TEXT, kota TEXT, alamat TEXT, latitude REAL, longitude REAL);");
 	
@@ -59,11 +59,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	            //Log.v("Pasti Pas",o.toString());
 	        }
 	    } catch (ClientProtocolException e) {
-	    	//Log.v("Pasti Pas","Client Protocol Exception "+e.getMessage());
+	    	Log.v("Pasti Pas","Client Protocol Exception "+e.getMessage());
 	    } catch (IOException e) {
-	    	//Log.v("Pasti Pas","IOException "+e.getMessage());
+	    	Log.v("Pasti Pas","IOException "+e.getMessage());
 	    } catch (JSONException e) {
-	    	//Log.v("Pasti Pas","JSON Exception "+e.getMessage());
+	    	Log.v("Pasti Pas","JSON Exception "+e.getMessage());
 	    }
 	    httpclient.getConnectionManager().shutdown();
 	
@@ -74,5 +74,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("DROP TABLE IF EXISTS pastipas");
 	        onCreate(db);
 	}
-
 }

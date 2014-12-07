@@ -3,8 +3,8 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="5dip"
-    android:paddingBottom="5dip"
+    android:paddingTop="0dip"
+    android:paddingBottom="0dip"
     android:background="@drawable/gradient_red"
     android:id="@+id/parentHeader"
     >
